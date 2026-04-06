@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SmartTrend AI Dashboard</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: #0f172a;
+    color: white;
+    margin: 0;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    background: #1e293b;
+    padding: 15px;
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: scale(1.03);
+}
+
+.title {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.summary {
+    margin: 10px 0;
+    color: #cbd5f5;
+}
+
+.meta {
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.tag {
+    display: inline-block;
+    padding: 3px 8px;
+    background: #3b82f6;
+    border-radius: 5px;
+    margin-right: 5px;
+}
+
+button {
+    padding: 8px 10px;
+    border: none;
+    border-radius: 5px;
+    background: #22c55e;
+    cursor: pointer;
+}
+
+.filter {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.filter button {
+    margin: 5px;
+    background: #334155;
+}
+</style>
+
+</head>
+<body>
+
+<h1>🚀 SmartTrend AI Dashboard</h1>
+
+<div class="filter">
+    <button onclick="filterData('All')">All</button>
+    <button onclick="filterData('AI')">AI</button>
+    <button onclick="filterData('Web Development')">Web</button>
+    <button onclick="filterData('Data Science')">Data</button>
+    <button onclick="filterData('DevOps')">DevOps</button>
+    <button onclick="filterData('Hardware')">Hardware</button>
+</div>
+
+<div class="container" id="data"></div>
+
+<script>
+
+let globalData = [];
+
+async function loadData() {
+    const res = await fetch("http://127.0.0.1:8000/trending");
+    const data = await res.json();
+
+    globalData = data;
+    render(data);
+}
+
+function render(data) {
+    let html = "";
+
+    data.forEach(item => {
+        html += `
+        <div class="card">
+            <div class="title">${item.title}</div>
+            <div class="summary">${item.summary}</div>
+
+            <div class="meta">
+                <span class="tag">${item.topic}</span>
+                <span class="tag">${item.source}</span>
+                <span class="tag">Score: ${item.score}</span>
+            </div>
+
+            <a href="${item.url}" target="_blank">
+                <button>View</button>
+            </a>
+        </div>
+        `;
+    });
+
+    document.getElementById("data").innerHTML = html;
+}
+
+function filterData(topic) {
+    if (topic === "All") {
+        render(globalData);
+        return;
+    }
+
+    const filtered = globalData.filter(item => item.topic === topic);
+    render(filtered);
+}
+
+loadData();
+
+</script>
+
+</body>
+</html>

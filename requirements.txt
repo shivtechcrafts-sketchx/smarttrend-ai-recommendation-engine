@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+requests
+python-dotenv
+praw
+openai
+numpy
+scikit-learn
